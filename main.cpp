@@ -114,6 +114,16 @@ class matrix {
       return row_has_leading_entry_one;
     }
 
+    int get_leading_entry_of_row(int i){
+      for (float entry : matrix_entries[i]){
+        if (entry > 1){
+          return entry;
+        }
+      }
+
+      return 0;
+    }
+
     // Constructor for matrix class
     matrix(std::vector<std::vector<float> > entries){
       matrix_entries = entries;
