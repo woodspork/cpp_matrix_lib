@@ -51,12 +51,6 @@ class matrix {
       return return_matrix;
     }
 
-    // class matrix multiply_matrix(class matrix matrix2){
-
-    // }
-    // class matrix multiply_matrix(matrix matrix2){
-    // }
-
     class matrix add_two_matrices(class matrix matrix_2){
       std::vector<std::vector<int> > matrix_entries_1 = matrix_entries;
       std::vector<std::vector<int> > matrix_entries_2 = matrix_2.matrix_entries;
@@ -105,6 +99,18 @@ class matrix {
       }
 
       return matrix_entries[i].size() + 1;
+    }
+
+    bool leading_entry_one_check(int i){
+      bool row_has_leading_entry_one = false;
+      for (signed int entry : matrix_entries[i]){
+        if (entry > 1){
+          row_has_leading_entry_one = false;
+          return row_has_leading_entry_one;
+        }
+      }
+
+      return row_has_leading_entry_one;
     }
 
     // Constructor for matrix class
