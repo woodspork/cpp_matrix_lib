@@ -6,11 +6,11 @@ class matrix {
   public:
     int row_dimension;
     int column_dimension;
-    std::vector<std::vector<int> > matrix_entries;
+    std::vector<std::vector<float> > matrix_entries;
 
     void print_matrix(){
-      for (std::vector<int> row : matrix_entries){
-        for (signed int entry : row){
+      for (std::vector<float> row : matrix_entries){
+        for (float entry : row){
           std::cout << entry << " ";
         }
         std::cout << "\n";
@@ -24,15 +24,16 @@ class matrix {
       int row_dimension_for_matrix_2 = matrix_2.row_dimension;
       int col_dimension_for_matrix_2 = matrix_2.column_dimension;
 
-      if (row_dimension_for_matrix_1 == row_dimension_for_matrix_2 && col_dimension_for_matrix_1 == col_dimension_for_matrix_2){
+      if (row_dimension_for_matrix_1 == row_dimension_for_matrix_2
+          && col_dimension_for_matrix_1 == col_dimension_for_matrix_2){
         return true;
       }
 
       return false;
     }
 
-    std::vector<int> row_to_column(int j){
-      std::vector<int> column;
+    std::vector<float> row_to_column(int j){
+      std::vector<float> column;
       for (int i=0; i<row_dimension; i++){
         column.push_back(matrix_entries[i][j]);
       }
@@ -41,9 +42,9 @@ class matrix {
     }
 
     class matrix transpose_matrix(){
-      std::vector<std::vector<int> > return_matrix_entries;
+      std::vector<std::vector<float> > return_matrix_entries;
       for (int j=0; j<column_dimension; j++){
-        std::vector<int> column = row_to_column(j);
+        std::vector<float> column = row_to_column(j);
         return_matrix_entries.push_back(column);
       }
 
@@ -52,9 +53,9 @@ class matrix {
     }
 
     class matrix add_two_matrices(class matrix matrix_2){
-      std::vector<std::vector<int> > matrix_entries_1 = matrix_entries;
-      std::vector<std::vector<int> > matrix_entries_2 = matrix_2.matrix_entries;
-      std::vector<std::vector<int> > ret_matrix_entries;
+      std::vector<std::vector<float> > matrix_entries_1 = matrix_entries;
+      std::vector<std::vector<float> > matrix_entries_2 = matrix_2.matrix_entries;
+      std::vector<std::vector<float> > ret_matrix_entries;
 
       int row_dimension_for_matrix_1 = row_dimension;
       int col_dimension_for_matrix_1 = column_dimension;
@@ -65,7 +66,7 @@ class matrix {
       if (row_dimension_for_matrix_1 == row_dimension_for_matrix_2  
           && col_dimension_for_matrix_1 == col_dimension_for_matrix_2 ){
         for(int j=0; j<row_dimension_for_matrix_1; j++){
-          std::vector<int> row{};
+          std::vector<float> row{};
           for (int i=0; i<col_dimension_for_matrix_2 ; i++){
             row.push_back(matrix_entries_1[i][j] + matrix_entries_2[i][j]);
           }
@@ -79,7 +80,7 @@ class matrix {
       return ret_matrix;
     }
 
-    void multiply_row_by_signed_int(signed int lambda, int i){
+    void multiply_row_by_signed_float(float lambda, int i){
       for(int j=0; j<matrix_entries[0].size(); j++){
         matrix_entries[i][j] = matrix_entries[i][j] * lambda;
       }
@@ -103,7 +104,7 @@ class matrix {
 
     bool leading_entry_one_check(int i){
       bool row_has_leading_entry_one = false;
-      for (signed int entry : matrix_entries[i]){
+      for (float entry : matrix_entries[i]){
         if (entry > 1){
           row_has_leading_entry_one = false;
           return row_has_leading_entry_one;
@@ -114,7 +115,7 @@ class matrix {
     }
 
     // Constructor for matrix class
-    matrix(std::vector<std::vector<int> > entries){
+    matrix(std::vector<std::vector<float> > entries){
       matrix_entries = entries;
       row_dimension = entries.size();
       column_dimension = entries[0].size();
@@ -122,9 +123,9 @@ class matrix {
 };
 
 int main() {
-  std::vector<int> row1 {1,2};
-  std::vector<int> row2 {0,2};
-  std::vector<std::vector<int> > matrix_entries;
+  std::vector<float> row1 {1,2};
+  std::vector<float> row2 {0,2};
+  std::vector<std::vector<float> > matrix_entries;
   matrix_entries.push_back(row1);
   matrix_entries.push_back(row2);
   matrix matrix1(matrix_entries);
