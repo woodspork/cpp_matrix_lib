@@ -114,14 +114,34 @@ class matrix {
       return row_has_leading_entry_one;
     }
 
-    int get_leading_entry_of_row(int i){
-      for (float entry : matrix_entries[i]){
+    int get_leading_entry_of_row(std::vector<std::vector<float> > entries, int i){
+      for (float entry : entries[i]){
         if (entry > 1){
           return entry;
         }
       }
 
       return 0;
+    }
+
+    class matrix convert_row_to_leading_entry_one(int i){
+      float leading_entry = get_leading_entry_of_row(matrix_entries, i);
+      if (leading_entry != 0){
+        for (int j=0; j<column_dimension; j++){
+          matrix_entries[i][j] = matrix_entries[i][j] / leading_entry;
+        }
+      }
+
+      return matrix(matrix_entries);
+    }
+
+    class matrix convert_matrix_to_leading_entries_one(){
+      matrix return_matrix(matrix_entries);
+      for (int i=0; i<row_dimension; i++){
+        return_matrix = return_matrix.convert_row_to_leading_entry_one(i);
+      }
+      
+      return return_matrix;
     }
 
     // Constructor for matrix class
@@ -133,19 +153,13 @@ class matrix {
 };
 
 int main() {
-  std::vector<float> row1 {1,2};
-  std::vector<float> row2 {0,2};
+  std::vector<float> row1 {2,2};
+  std::vector<float> row2 {2,3};
   std::vector<std::vector<float> > matrix_entries;
   matrix_entries.push_back(row1);
   matrix_entries.push_back(row2);
   matrix matrix1(matrix_entries);
 
-  matrix matrix2(matrix_entries);
-  std::cout << "Printing matrix 1" << "\n";
-  matrix1.print_matrix();
-  std::cout << "\n";
-
-  std::cout << "transpose the matrix" << "\n";
-  matrix matrix4 = matrix1.transpose_matrix();
-  matrix4.print_matrix();
+  matrix ret_matrix = matrix1.convert_matrix_to_leading_entries_one();
+  ret_matrix.print_matrix();
 }
