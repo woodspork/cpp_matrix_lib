@@ -52,6 +52,34 @@ class matrix {
       return return_matrix;
     }
 
+    matrix operator-(const matrix& m){
+      std::vector<std::vector<float> > matrix_entries_1 = this->matrix_entries;
+      std::vector<std::vector<float> > matrix_entries_2 = m.matrix_entries;
+      std::vector<std::vector<float> > ret_matrix_entries;
+
+      int row_dimension_for_matrix_1 = row_dimension;
+      int col_dimension_for_matrix_1 = column_dimension;
+
+      int row_dimension_for_matrix_2 = m.row_dimension;
+      int col_dimension_for_matrix_2 = m.column_dimension;
+
+      if (row_dimension_for_matrix_1 == row_dimension_for_matrix_2  
+          && col_dimension_for_matrix_1 == col_dimension_for_matrix_2 ){
+        for(int j=0; j<row_dimension_for_matrix_1; j++){
+          std::vector<float> row{};
+          for (int i=0; i<col_dimension_for_matrix_2 ; i++){
+            row.push_back(matrix_entries_1[i][j] - matrix_entries_2[i][j]);
+          }
+          ret_matrix_entries.push_back(row);
+        }
+      } else {
+        throw std::invalid_argument("received matrix with incorrect dimensions");
+      }
+
+      matrix ret_matrix = matrix(ret_matrix_entries);
+      return ret_matrix;
+    }
+
     matrix operator+(const matrix& m){
       std::vector<std::vector<float> > matrix_entries_1 = this->matrix_entries;
       std::vector<std::vector<float> > matrix_entries_2 = m.matrix_entries;
@@ -170,5 +198,8 @@ int main() {
 
   std::cout << "\n";
   matrix matrix2 = matrix1 + matrix1;
+  matrix matrix3 = matrix1 - matrix1;
   matrix2.print();
+  std::cout << "\n";
+  matrix3.print();
 }
