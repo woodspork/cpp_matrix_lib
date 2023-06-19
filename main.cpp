@@ -8,7 +8,7 @@ class matrix {
     int column_dimension;
     std::vector<std::vector<float> > matrix_entries;
 
-    void print_matrix(){
+    void print(){
       for (std::vector<float> row : matrix_entries){
         for (float entry : row){
           std::cout << entry << " ";
@@ -52,16 +52,16 @@ class matrix {
       return return_matrix;
     }
 
-    class matrix add_two_matrices(class matrix matrix_2){
-      std::vector<std::vector<float> > matrix_entries_1 = matrix_entries;
-      std::vector<std::vector<float> > matrix_entries_2 = matrix_2.matrix_entries;
+    matrix operator+(const matrix& m){
+      std::vector<std::vector<float> > matrix_entries_1 = this->matrix_entries;
+      std::vector<std::vector<float> > matrix_entries_2 = m.matrix_entries;
       std::vector<std::vector<float> > ret_matrix_entries;
 
       int row_dimension_for_matrix_1 = row_dimension;
       int col_dimension_for_matrix_1 = column_dimension;
 
-      int row_dimension_for_matrix_2 = matrix_2.row_dimension;
-      int col_dimension_for_matrix_2 = matrix_2.column_dimension;
+      int row_dimension_for_matrix_2 = m.row_dimension;
+      int col_dimension_for_matrix_2 = m.column_dimension;
 
       if (row_dimension_for_matrix_1 == row_dimension_for_matrix_2  
           && col_dimension_for_matrix_1 == col_dimension_for_matrix_2 ){
@@ -161,5 +161,14 @@ int main() {
   matrix matrix1(matrix_entries);
 
   matrix ret_matrix = matrix1.convert_matrix_to_leading_entries_one();
-  ret_matrix.print_matrix();
+  ret_matrix.print();
+  for(int j=1; j<ret_matrix.row_dimension; j++){
+    ret_matrix.subtract_row_i_from_row_j(0, j);
+  }
+
+  ret_matrix.print();
+
+  std::cout << "\n";
+  matrix matrix2 = matrix1 + matrix1;
+  matrix2.print();
 }
