@@ -1,4 +1,5 @@
 #include <iostream>
+#include <array>
 #include <stdexcept>
 #include <vector>
 
@@ -32,6 +33,34 @@ class matrix {
       return false;
     }
 
+    class matrix transpose(){
+      std::vector<std::vector<float> > ret_matrix_entries;
+      for (int i=0; i<row_dimension; i++){
+        std::vector<float> row;
+        ret_matrix_entries.push_back(row);
+        for (int j=0; j<column_dimension; j++){
+          ret_matrix_entries[i].push_back(0);
+        }
+      }
+
+      std::vector<std::vector<float> > input_matrix_entries = matrix_entries;
+
+      for (int i=0; i<row_dimension; i++){
+        for (int j=0; j<column_dimension; j++){
+          ret_matrix_entries[i][j] = input_matrix_entries[j][i];
+        }
+      }
+
+      return matrix(ret_matrix_entries);
+    }
+
+
+    void subtract_row_i_from_row_j(int i, int j){
+      for(int k=0; k<matrix_entries[i].size(); k++){
+        matrix_entries[j][k] = matrix_entries[j][k] - matrix_entries[i][k];
+      }
+    }
+
     std::vector<float> row_to_column(int j){
       std::vector<float> column;
       for (int i=0; i<row_dimension; i++){
@@ -41,15 +70,16 @@ class matrix {
       return column;
     }
 
-    class matrix transpose_matrix(){
-      std::vector<std::vector<float> > return_matrix_entries;
-      for (int j=0; j<column_dimension; j++){
-        std::vector<float> column = row_to_column(j);
-        return_matrix_entries.push_back(column);
+    matrix operator*(const float& lambda){
+      std::vector<std::vector<float> > ret_matrix_entries = this->matrix_entries;
+      for (int i=0; i<row_dimension; i++){
+        for (int j=0; j<column_dimension; j++){
+          ret_matrix_entries[i][j] = lambda * ret_matrix_entries[i][j];
+        }
       }
 
-      matrix return_matrix = matrix(return_matrix_entries);
-      return return_matrix;
+      matrix ret_matrix = matrix(ret_matrix_entries);
+      return ret_matrix;
     }
 
     matrix operator-(const matrix& m){
@@ -108,16 +138,29 @@ class matrix {
       return ret_matrix;
     }
 
-    void multiply_row_by_signed_float(float lambda, int i){
-      for(int j=0; j<matrix_entries[0].size(); j++){
-        matrix_entries[i][j] = matrix_entries[i][j] * lambda;
-      }
-    }
+    bool operator==(const matrix& m){
+      std::vector<std::vector<float> > matrix_entries_1 = this->matrix_entries;
+      std::vector<std::vector<float> > matrix_entries_2 = m.matrix_entries;
 
-    void subtract_row_i_from_row_j(int i, int j){
-      for(int k=0; k<matrix_entries[i].size(); k++){
-        matrix_entries[j][k] = matrix_entries[j][k] - matrix_entries[i][k];
+      int row_dimension_for_matrix_1 = row_dimension;
+      int col_dimension_for_matrix_1 = column_dimension;
+
+      int row_dimension_for_matrix_2 = m.row_dimension;
+      int col_dimension_for_matrix_2 = m.column_dimension;
+      bool matrices_equal = true;
+
+      if (row_dimension_for_matrix_1 == row_dimension_for_matrix_2 
+          && col_dimension_for_matrix_1 == col_dimension_for_matrix_2){
+        for (int j=0; j<row_dimension_for_matrix_1; j++){
+          for (int i=0; i<col_dimension_for_matrix_1; i++){
+            if (matrix_entries_1[i][j] != matrix_entries_2[i][j]){
+              matrices_equal = false;
+            }
+          }
+        }
       }
+
+      return matrices_equal;
     }
 
     int get_column_of_leading_entry_in_row(int i){
@@ -172,6 +215,33 @@ class matrix {
       return return_matrix;
     }
 
+    class matrix row_reduce_matrix(){
+      matrix rows = matrix(matrix_entries);
+      matrix columns = rows.transpose();
+      std::vector<float> leading_entries;
+      std::vector<std::array<int, 2> > leading_entry_indices;
+
+      // Preprocessing some data to reduce for loops later hopefully
+      for (int i=0; i<row_dimension; i++){
+        bool leading_entry_found = false;
+        for (int j=0; j<column_dimension; j++){
+          float entry = matrix_entries[i][j];
+          if (leading_entry_found == false && entry != 0){
+            leading_entries.push_back(entry);
+            std::array<int, 2> indices = {i,j};
+            leading_entry_indices.push_back(indices);
+            leading_entry_found = true;
+          }
+        }
+      }
+
+      
+
+
+
+      return rows;
+    }
+    
     // Constructor for matrix class
     matrix(std::vector<std::vector<float> > entries){
       matrix_entries = entries;
@@ -181,7 +251,7 @@ class matrix {
 };
 
 int main() {
-  std::vector<float> row1 {2,2};
+  std::vector<float> row1 {2,1};
   std::vector<float> row2 {2,3};
   std::vector<std::vector<float> > matrix_entries;
   matrix_entries.push_back(row1);
@@ -190,11 +260,6 @@ int main() {
 
   matrix ret_matrix = matrix1.convert_matrix_to_leading_entries_one();
   ret_matrix.print();
-  for(int j=1; j<ret_matrix.row_dimension; j++){
-    ret_matrix.subtract_row_i_from_row_j(0, j);
-  }
-
-  ret_matrix.print();
 
   std::cout << "\n";
   matrix matrix2 = matrix1 + matrix1;
@@ -202,4 +267,29 @@ int main() {
   matrix2.print();
   std::cout << "\n";
   matrix3.print();
+
+  std::cout << "\n";
+  std::cout << "\n";
+  matrix matrix4 = matrix2 * 3;
+  matrix4.print();
+
+  std::cout << "\n";
+  bool matrices_equal_1 = (matrix4 == matrix2);
+  std::cout << matrices_equal_1;
+  std::cout << "\n";
+
+
+  std::cout << "\n";
+  bool matrices_equal_2 = (matrix4 == matrix4);
+  std::cout << matrices_equal_2;
+  std::cout << "\n";
+
+  std::cout << "matrix1" << "\n";
+  matrix1.print();
+  std::cout << "transpose of matrix" << "\n";
+  matrix trans = matrix1.transpose();
+  trans.print();
+  std::cout << "\n";
+  matrix row_reduced = matrix1.row_reduce_matrix();
+  row_reduced.print();
 }
