@@ -3,6 +3,49 @@
 #include <stdexcept>
 #include <vector>
 
+class empty_matrix {
+  public: 
+    int row_dim;
+    int column_dim;
+    std::vector<std::vector<float> > entries;
+    std::vector<std::vector<float> > transpose;
+
+
+    void print(){
+      for (std::vector<float> row : entries){
+        for (float entry : row){
+          std::cout << entry << " ";
+        }
+        std::cout << "\n";
+      }
+    }
+
+    empty_matrix(int row_dimension, int column_dimension){
+
+      std::vector<std::vector<float> > transpose;
+      std::vector<std::vector<float> > matrix_entries;
+      for (int i=0; i<row_dimension; i++){
+        std::vector<float> row;
+        row.resize(column_dimension);
+
+        std::fill(row.begin(), row.end(), 0);
+        matrix_entries.push_back(row);
+        transpose.push_back(row);
+      }
+
+      for (int j=0; j<row_dimension; j++){
+        for (int k=0; k<column_dimension; k++){
+          transpose[k][j] = matrix_entries[j][k];
+        }
+      }
+
+      entries = matrix_entries; 
+      transpose = matrix_entries; 
+      row_dim = row_dimension;
+      column_dim = column_dimension;
+    }
+};
+ 
 class matrix {
   public:
     int row_dimension;
@@ -239,5 +282,16 @@ int main() {
 
   matrix matrix_3 = matrix1 - matrix1;
   matrix_3.print();
+
+  std::cout << "\n";
+  empty_matrix matrix20 = empty_matrix(2,2);
+  matrix20.print();
+
+  std::vector<std::vector<float> > transpose = matrix20.transpose;
+  for (int i=0; i<matrix20.row_dim; i++){
+    for (int j=0; j<matrix20.column_dim; j++){
+      std::cout << transpose[i][j] << "\n";
+    }
+  }
 
 }
