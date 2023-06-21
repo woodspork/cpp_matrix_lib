@@ -17,22 +17,7 @@ class matrix {
         std::cout << "\n";
       }
     }
-
-    bool matrices_have_equal_dimension(class matrix matrix_2){
-      int row_dimension_for_matrix_1 = row_dimension;
-      int col_dimension_for_matrix_1 = column_dimension;
-
-      int row_dimension_for_matrix_2 = matrix_2.row_dimension;
-      int col_dimension_for_matrix_2 = matrix_2.column_dimension;
-
-      if (row_dimension_for_matrix_1 == row_dimension_for_matrix_2
-          && col_dimension_for_matrix_1 == col_dimension_for_matrix_2){
-        return true;
-      }
-
-      return false;
-    }
-
+    
     class matrix transpose(){
       std::vector<std::vector<float> > ret_matrix_entries;
       for (int i=0; i<row_dimension; i++){
@@ -61,49 +46,12 @@ class matrix {
       }
     }
 
-    std::vector<float> row_to_column(int j){
-      std::vector<float> column;
-      for (int i=0; i<row_dimension; i++){
-        column.push_back(matrix_entries[i][j]);
-      }
-
-      return column;
-    }
-
     matrix operator*(const float& lambda){
       std::vector<std::vector<float> > ret_matrix_entries = this->matrix_entries;
       for (int i=0; i<row_dimension; i++){
         for (int j=0; j<column_dimension; j++){
           ret_matrix_entries[i][j] = lambda * ret_matrix_entries[i][j];
         }
-      }
-
-      matrix ret_matrix = matrix(ret_matrix_entries);
-      return ret_matrix;
-    }
-
-    matrix operator-(const matrix& m){
-      std::vector<std::vector<float> > matrix_entries_1 = this->matrix_entries;
-      std::vector<std::vector<float> > matrix_entries_2 = m.matrix_entries;
-      std::vector<std::vector<float> > ret_matrix_entries;
-
-      int row_dimension_for_matrix_1 = row_dimension;
-      int col_dimension_for_matrix_1 = column_dimension;
-
-      int row_dimension_for_matrix_2 = m.row_dimension;
-      int col_dimension_for_matrix_2 = m.column_dimension;
-
-      if (row_dimension_for_matrix_1 == row_dimension_for_matrix_2  
-          && col_dimension_for_matrix_1 == col_dimension_for_matrix_2 ){
-        for(int j=0; j<row_dimension_for_matrix_1; j++){
-          std::vector<float> row{};
-          for (int i=0; i<col_dimension_for_matrix_2 ; i++){
-            row.push_back(matrix_entries_1[i][j] - matrix_entries_2[i][j]);
-          }
-          ret_matrix_entries.push_back(row);
-        }
-      } else {
-        throw std::invalid_argument("received matrix with incorrect dimensions");
       }
 
       matrix ret_matrix = matrix(ret_matrix_entries);
@@ -136,6 +84,13 @@ class matrix {
 
       matrix ret_matrix = matrix(ret_matrix_entries);
       return ret_matrix;
+    }
+
+    matrix operator-(const matrix& m){
+      matrix matrix_1 = matrix(matrix_entries);
+      matrix matrix_2 = matrix(m.matrix_entries);
+
+      return matrix_1 + (matrix_2 * -1);
     }
 
     bool operator==(const matrix& m){
@@ -215,6 +170,25 @@ class matrix {
       return return_matrix;
     }
 
+    class matrix row_reduce_against_row_i(
+        std::vector<float> leading_entries,
+        std::vector<std::array<int, 2> > leading_entry_indices,
+        float leading_entry,
+        int row_index,
+        int column_index
+        ){
+
+      matrix row_reduced_matrix_against_row_i = matrix(matrix_entries) * (1/leading_entry);
+
+      for (int k=row_index+1; k<row_dimension; k++){
+        if (leading_entry_indices[k][1] == column_index){
+          row_reduced_matrix_against_row_i.subtract_row_i_from_row_j(row_index, leading_entry_indices[k][0]);
+        }
+      }
+
+      return row_reduced_matrix_against_row_i;
+    }
+
     class matrix row_reduce_matrix(){
       matrix rows = matrix(matrix_entries);
       matrix columns = rows.transpose();
@@ -234,12 +208,17 @@ class matrix {
           }
         }
       }
+      std::cout << "rows before altering" << "\n";
+      rows.print();
 
-      
+      matrix ret_matrix = rows.row_reduce_against_row_i(
+          leading_entries,
+          leading_entry_indices,
+          leading_entries[0],
+          leading_entry_indices[0][0],
+          leading_entry_indices[0][1]);
 
-
-
-      return rows;
+      return ret_matrix;
     }
     
     // Constructor for matrix class
@@ -258,38 +237,7 @@ int main() {
   matrix_entries.push_back(row2);
   matrix matrix1(matrix_entries);
 
-  matrix ret_matrix = matrix1.convert_matrix_to_leading_entries_one();
-  ret_matrix.print();
+  matrix matrix_3 = matrix1 - matrix1;
+  matrix_3.print();
 
-  std::cout << "\n";
-  matrix matrix2 = matrix1 + matrix1;
-  matrix matrix3 = matrix1 - matrix1;
-  matrix2.print();
-  std::cout << "\n";
-  matrix3.print();
-
-  std::cout << "\n";
-  std::cout << "\n";
-  matrix matrix4 = matrix2 * 3;
-  matrix4.print();
-
-  std::cout << "\n";
-  bool matrices_equal_1 = (matrix4 == matrix2);
-  std::cout << matrices_equal_1;
-  std::cout << "\n";
-
-
-  std::cout << "\n";
-  bool matrices_equal_2 = (matrix4 == matrix4);
-  std::cout << matrices_equal_2;
-  std::cout << "\n";
-
-  std::cout << "matrix1" << "\n";
-  matrix1.print();
-  std::cout << "transpose of matrix" << "\n";
-  matrix trans = matrix1.transpose();
-  trans.print();
-  std::cout << "\n";
-  matrix row_reduced = matrix1.row_reduce_matrix();
-  row_reduced.print();
 }
