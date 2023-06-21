@@ -10,23 +10,12 @@ class empty_matrix {
     std::vector<std::vector<float> > entries;
     std::vector<std::vector<float> > transpose;
 
-
-    void print(){
-      for (std::vector<float> row : entries){
-        for (float entry : row){
-          std::cout << entry << " ";
-        }
-        std::cout << "\n";
-      }
-    }
-
     empty_matrix(int row_dimension, int column_dimension){
 
       std::vector<std::vector<float> > transpose;
       std::vector<std::vector<float> > matrix_entries;
       for (int i=0; i<row_dimension; i++){
-        std::vector<float> row;
-        row.resize(column_dimension);
+        std::vector<float> row; row.resize(column_dimension);
 
         std::fill(row.begin(), row.end(), 0);
         matrix_entries.push_back(row);
@@ -52,15 +41,6 @@ class matrix {
     int column_dimension;
     std::vector<std::vector<float> > matrix_entries;
 
-    void print(){
-      for (std::vector<float> row : matrix_entries){
-        for (float entry : row){
-          std::cout << entry << " ";
-        }
-        std::cout << "\n";
-      }
-    }
-    
     class matrix transpose(){
       std::vector<std::vector<float> > ret_matrix_entries;
       for (int i=0; i<row_dimension; i++){
@@ -252,7 +232,6 @@ class matrix {
         }
       }
       std::cout << "rows before altering" << "\n";
-      rows.print();
 
       matrix ret_matrix = rows.row_reduce_against_row_i(
           leading_entries,
@@ -263,7 +242,8 @@ class matrix {
 
       return ret_matrix;
     }
-    
+
+
     // Constructor for matrix class
     matrix(std::vector<std::vector<float> > entries){
       matrix_entries = entries;
@@ -271,6 +251,17 @@ class matrix {
       column_dimension = entries[0].size();
     }
 };
+
+std::ostream& operator<<(std::ostream& os, const matrix& m) {
+  for (int i=0; i<m.row_dimension; i++){
+    for (int j=0; j<m.column_dimension; j++){
+      os << m.matrix_entries[i][j] << " ";
+    }
+    os << "\n";
+  }
+
+  return os;
+}
 
 int main() {
   std::vector<float> row1 {2,1};
@@ -280,18 +271,5 @@ int main() {
   matrix_entries.push_back(row2);
   matrix matrix1(matrix_entries);
 
-  matrix matrix_3 = matrix1 - matrix1;
-  matrix_3.print();
-
-  std::cout << "\n";
-  empty_matrix matrix20 = empty_matrix(2,2);
-  matrix20.print();
-
-  std::vector<std::vector<float> > transpose = matrix20.transpose;
-  for (int i=0; i<matrix20.row_dim; i++){
-    for (int j=0; j<matrix20.column_dim; j++){
-      std::cout << transpose[i][j] << "\n";
-    }
-  }
-
+  std::cout << matrix1;
 }
