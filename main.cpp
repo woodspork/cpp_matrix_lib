@@ -130,7 +130,7 @@ class matrix {
       int col_dimension_for_matrix_2 = m.column_dimension;
 
       // check if matrices are of correct dimension for multiplication
-      if (col_dimension_for_matrix_1 != row_dimension_for_matrix_1){
+      if (col_dimension_for_matrix_1 != row_dimension_for_matrix_2){
         throw std::invalid_argument("received matrix with incorrect dimensions");
       }
 
@@ -299,16 +299,28 @@ int main() {
   std::vector<float> row1 {2,1};
   std::vector<float> row2 {2,3};
   std::vector<std::vector<float> > matrix_entries;
+  std::vector<std::vector<float> > matrix_entries_1;
   matrix_entries.push_back(row1);
   matrix_entries.push_back(row2);
+  matrix_entries_1.push_back(row1);
+  matrix_entries_1.push_back(row2);
+  matrix_entries_1.push_back(row2);
   matrix matrix1(matrix_entries);
+  matrix matrix2(matrix_entries_1);
   std::cout << "\n";
   std::cout << "matrix1";
   std::cout << "\n";
   std::cout << matrix1;
   std::cout << "\n";
 
-  matrix matrix5 = matrix1 * matrix1;
+
+  std::cout << "\n";
+  std::cout << "matrix2";
+  std::cout << "\n";
+  std::cout << matrix2;
+  std::cout << "\n";
+
+  matrix matrix5 = matrix1 * matrix2;
   std::cout << matrix5;
   std::cout << "\n";
   
