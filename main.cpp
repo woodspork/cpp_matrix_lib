@@ -40,28 +40,7 @@ class matrix {
     int row_dimension;
     int column_dimension;
     std::vector<std::vector<float> > matrix_entries;
-
-    class matrix transpose(){
-      std::vector<std::vector<float> > ret_matrix_entries;
-      for (int i=0; i<row_dimension; i++){
-        std::vector<float> row;
-        ret_matrix_entries.push_back(row);
-        for (int j=0; j<column_dimension; j++){
-          ret_matrix_entries[i].push_back(0);
-        }
-      }
-
-      std::vector<std::vector<float> > input_matrix_entries = matrix_entries;
-
-      for (int i=0; i<row_dimension; i++){
-        for (int j=0; j<column_dimension; j++){
-          ret_matrix_entries[i][j] = input_matrix_entries[j][i];
-        }
-      }
-
-      return matrix(ret_matrix_entries);
-    }
-
+    std::vector<std::vector<float> > matrix_transpose;
 
     void subtract_row_i_from_row_j(int i, int j){
       for(int k=0; k<matrix_entries[i].size(); k++){
@@ -141,6 +120,40 @@ class matrix {
       return matrices_equal;
     }
 
+    matrix operator*(const matrix& m){
+      std::vector<std::vector<float> > matrix_2_transpose_entries = m.matrix_transpose;
+
+      int row_dimension_for_matrix_1 = row_dimension;
+      int col_dimension_for_matrix_1 = column_dimension;
+
+      int row_dimension_for_matrix_2 = m.row_dimension;
+      int col_dimension_for_matrix_2 = m.column_dimension;
+
+      // check if matrices are of correct dimension for multiplication
+      if (col_dimension_for_matrix_1 != row_dimension_for_matrix_1){
+        throw std::invalid_argument("received matrix with incorrect dimensions");
+      }
+
+      // fill an empty matrix of correct dimensions to avoid segfaults
+      std::vector<std::vector<float> > ret_entries;
+      for (int i=0; i<row_dimension_for_matrix_1; i++){
+        std::vector<float> row; row.resize(col_dimension_for_matrix_2);
+        std::fill(row.begin(), row.end(), 0);
+        matrix_entries.push_back(row);
+        ret_entries.push_back(row);
+      }
+
+      for (int i=0; i<row_dimension_for_matrix_1; i++){
+        for (int j=0; j<col_dimension_for_matrix_2; j++){
+          for (int k=0; k<row_dimension_for_matrix_2; k++){
+            ret_entries[i][j] += matrix_entries[i][k] * matrix_2_transpose_entries[j][k];
+          }
+        }
+      }
+
+      return matrix(ret_entries);
+    };
+
     int get_column_of_leading_entry_in_row(int i){
       for(int j=0; j<matrix_entries[i].size(); j++){
         if (matrix_entries[i][j] > 0){
@@ -214,11 +227,11 @@ class matrix {
 
     class matrix row_reduce_matrix(){
       matrix rows = matrix(matrix_entries);
-      matrix columns = rows.transpose();
+      matrix columns = matrix(matrix_transpose);
       std::vector<float> leading_entries;
       std::vector<std::array<int, 2> > leading_entry_indices;
 
-      // Preprocessing some data to reduce for loops later hopefully
+      // Preprocessing leading entry data and indices
       for (int i=0; i<row_dimension; i++){
         bool leading_entry_found = false;
         for (int j=0; j<column_dimension; j++){
@@ -246,9 +259,28 @@ class matrix {
 
     // Constructor for matrix class
     matrix(std::vector<std::vector<float> > entries){
+      int row_dim = entries.size();
+      int col_dim = entries[0].size();
+
+      std::vector<std::vector<float> > transpose;
+      for (int i=0; i<row_dim; i++){
+        std::vector<float> row; row.resize(col_dim);
+        std::fill(row.begin(), row.end(), 0);
+        matrix_entries.push_back(row);
+        transpose.push_back(row);
+      }
+
+      for (int i=0; i<row_dim; i++){
+        for (int j=0; j<col_dim; j++){
+          transpose[i][j] = entries[j][i];
+        }
+      }
+
+      // pre-compute matrix transpose to avoid computation later
+      matrix_transpose = transpose;
       matrix_entries = entries;
-      row_dimension = entries.size();
-      column_dimension = entries[0].size();
+      row_dimension = row_dim;
+      column_dimension = col_dim;
     }
 };
 
@@ -270,6 +302,18 @@ int main() {
   matrix_entries.push_back(row1);
   matrix_entries.push_back(row2);
   matrix matrix1(matrix_entries);
-
+  std::cout << "\n";
+  std::cout << "matrix1";
+  std::cout << "\n";
   std::cout << matrix1;
+  std::cout << "\n";
+
+  matrix matrix5 = matrix1 * matrix1;
+  std::cout << matrix5;
+  std::cout << "\n";
+  
+  matrix transpose = matrix(matrix1.matrix_transpose);
+  std::cout << "\n";
+  std::cout << "transpose \n";
+  std::cout << transpose;
 }
