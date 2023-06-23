@@ -186,38 +186,6 @@ class matrix {
       return matrix(ret_entries);
     }
 
-    // int get_column_of_leading_entry_in_row(int i){
-      // for(int j=0; j<matrix_entries[i].size(); j++){
-        // if (matrix_entries[i][j] > 0){
-          // return j;
-        // }
-      // }
-
-      // return matrix_entries[i].size() + 1;
-    // }
-
-    // bool leading_entry_one_check(int i){
-      // bool row_has_leading_entry_one = false;
-      // for (float entry : matrix_entries[i]){
-        // if (entry > 1){
-          // row_has_leading_entry_one = false;
-          // return row_has_leading_entry_one;
-        // }
-      // }
-
-      // return row_has_leading_entry_one;
-    // }
-
-    // int get_leading_entry_of_row(std::vector<std::vector<float> > entries, int i){
-      // for (float entry : entries[i]){
-        // if (entry > 1){
-          // return entry;
-        // }
-      // }
-
-      // return 0;
-    // }
-
     class matrix convert_matrix_to_leading_entry_one(){
       std::vector<std::vector<float> > ret_entries = matrix_entries;
       matrix ret_matrix = matrix(ret_entries);
@@ -276,77 +244,6 @@ class matrix {
 
       return ret_matrix;
     };
-
-    // class matrix convert_row_to_leading_entry_one(int i){
-      // float leading_entry = get_leading_entry_of_row(matrix_entries, i);
-      // if (leading_entry != 0){
-        // for (int j=0; j<column_dimension; j++){
-          // matrix_entries[i][j] = matrix_entries[i][j] / leading_entry;
-        // }
-      // }
-
-      // return matrix(matrix_entries);
-    // }
-
-    // class matrix convert_matrix_to_leading_entries_one(){
-      // matrix return_matrix(matrix_entries);
-      // for (int i=0; i<row_dimension; i++){
-        // return_matrix = return_matrix.convert_row_to_leading_entry_one(i);
-      // }
-      
-      // return return_matrix;
-    // }
-
-    // class matrix row_reduce_against_row_i(
-        // std::vector<float> leading_entries,
-        // std::vector<std::array<int, 2> > leading_entry_indices,
-        // float leading_entry,
-        // int row_index,
-        // int column_index
-        // ){
-
-      // matrix row_reduced_matrix_against_row_i = matrix(matrix_entries) * (1/leading_entry);
-
-      // for (int k=row_index+1; k<row_dimension; k++){
-        // if (leading_entry_indices[k][1] == column_index){
-          // row_reduced_matrix_against_row_i.subtract_row_i_from_row_j(row_index, leading_entry_indices[k][0]);
-        // }
-      // }
-
-      // return row_reduced_matrix_against_row_i;
-    // }
-
-    // class matrix row_reduce_matrix(){
-      // matrix rows = matrix(matrix_entries);
-      // matrix columns = matrix(matrix_transpose);
-      // std::vector<float> leading_entries;
-      // std::vector<std::array<int, 2> > leading_entry_indices;
-
-      // // Preprocessing leading entry data and indices
-      // for (int i=0; i<row_dimension; i++){
-        // bool leading_entry_found = false;
-        // for (int j=0; j<column_dimension; j++){
-          // float entry = matrix_entries[i][j];
-          // if (leading_entry_found == false && entry != 0){
-            // leading_entries.push_back(entry);
-            // std::array<int, 2> indices = {i,j};
-            // leading_entry_indices.push_back(indices);
-            // leading_entry_found = true;
-          // }
-        // }
-      // }
-      // std::cout << "rows before altering" << "\n";
-
-      // matrix ret_matrix = rows.row_reduce_against_row_i(
-          // leading_entries,
-          // leading_entry_indices,
-          // leading_entries[0],
-          // leading_entry_indices[0][0],
-          // leading_entry_indices[0][1]);
-
-      // return ret_matrix;
-    // }
-
 
     // Constructor for matrix class
     matrix(std::vector<std::vector<float> > entries){
