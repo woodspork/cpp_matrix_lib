@@ -3,38 +3,39 @@
 #include <stdexcept>
 #include <vector>
 
-class empty_matrix {
-  public: 
-    int row_dim;
-    int column_dim;
-    std::vector<std::vector<float> > entries;
-    std::vector<std::vector<float> > transpose;
+// class empty_matrix {
+  // public: 
+    // int row_dim;
+    // int column_dim;
+    // std::vector<std::vector<float> > entries;
+    // std::vector<std::vector<float> > transpose;
 
-    empty_matrix(int row_dimension, int column_dimension){
+    // empty_matrix(int row_dimension, int column_dimension){
 
-      std::vector<std::vector<float> > transpose;
-      std::vector<std::vector<float> > matrix_entries;
-      for (int i=0; i<row_dimension; i++){
-        std::vector<float> row; row.resize(column_dimension);
+      // std::vector<std::vector<float> > transpose;
+      // std::vector<std::vector<float> > matrix_entries;
+      // for (int i=0; i<row_dimension; i++){
+        // std::vector<float> row; row.resize(column_dimension);
 
-        std::fill(row.begin(), row.end(), 0);
-        matrix_entries.push_back(row);
-        transpose.push_back(row);
-      }
+        // std::fill(row.begin(), row.end(), 0);
+        // matrix_entries.push_back(row);
+        // transpose.push_back(row);
+      // }
 
-      for (int j=0; j<row_dimension; j++){
-        for (int k=0; k<column_dimension; k++){
-          transpose[k][j] = matrix_entries[j][k];
-        }
-      }
+      // for (int j=0; j<row_dimension; j++){
+        // for (int k=0; k<column_dimension; k++){
+          // transpose[k][j] = matrix_entries[j][k];
+        // }
+      // }
 
-      entries = matrix_entries; 
-      transpose = matrix_entries; 
-      row_dim = row_dimension;
-      column_dim = column_dimension;
-    }
-};
- 
+      // entries = matrix_entries; 
+      // transpose = matrix_entries; 
+      // row_dim = row_dimension;
+      // column_dim = column_dimension;
+    // }
+// };
+//
+
 class matrix {
   public:
     int row_dimension;
@@ -209,41 +210,62 @@ class matrix {
       return matrix(ret_entries);
     }
 
+    /*
+     *
+     * Small experiment function to start row-reducing matrices of small dimensions.
+     * Later I will generalize to something a function that row reduces larger square matrices 
+     * and eventually non-square matrices.
+     */
+    class matrix row_reduce_two_by_two_matrix(){
+      const int ROW_DIMENSION_OF_TWO_BY_TWO_MATRIX = 2;
+      const int COLUMN_DIMENSION_OF_TWO_BY_TWO_MATRIX = 2;
 
-    class matrix row_reduce_matrix(){
-      matrix ret_matrix = matrix(matrix_entries).convert_matrix_to_leading_entry_one();
-      std::vector<std::vector<float> > ret_entries = ret_matrix.matrix_entries;
+      std::vector<std::vector<float> > IDENTITY_MATRIX_ENTRIES{{1,0}, {0,1}};
+      std::vector<float> ZERO_ROW{{0,0}};
+      matrix IDENTITY_MATRIX = matrix(IDENTITY_MATRIX_ENTRIES);
 
-      for (int i=0; i<column_dimension; i++){
-        std::vector<float> pivot_rows;
-        for (int j=0; j<row_dimension; j++){
-          if (ret_entries[i][j] > 0){
-            pivot_rows.push_back(j);
-          }
-        }
+      if (row_dimension != ROW_DIMENSION_OF_TWO_BY_TWO_MATRIX   
+          || column_dimension != COLUMN_DIMENSION_OF_TWO_BY_TWO_MATRIX){
+        throw std::invalid_argument("received matrix with incorrect dimensions");
+      } 
 
-        float first_pivot_row_index = pivot_rows[0];
-        std::vector<float> pivot_row = matrix_entries[first_pivot_row_index];
+      for (
 
-        std::vector<std::vector<float> > intermediate_row_reduction_matrix_entries;
-        for (int j=0; j<column_dimension; j++){
-          std::vector<float> row; row.resize(row_dimension);
-          std::fill(row.begin(), row.end(), 0);
-          intermediate_row_reduction_matrix_entries.push_back(row);
-        }
+    }
+    // class matrix row_reduce_matrix(){
+      // matrix ret_matrix = matrix(matrix_entries).convert_matrix_to_leading_entry_one();
+      // std::vector<std::vector<float> > ret_entries = ret_matrix.matrix_entries;
 
-        for ( int index : pivot_rows ){
-          for (int k=0; k<column_dimension; k++){
-            intermediate_row_reduction_matrix_entries[index][k] = ret_entries[first_pivot_row_index][k];
-          }
-        }
+      // for (int i=0; i<column_dimension; i++){
+        // std::vector<float> pivot_rows;
+        // for (int j=0; j<row_dimension; j++){
+          // if (ret_entries[i][j] > 0){
+            // pivot_rows.push_back(j);
+          // }
+        // }
+
+        // float first_pivot_row_index = pivot_rows[0];
+        // std::vector<float> pivot_row = matrix_entries[first_pivot_row_index];
+
+        // std::vector<std::vector<float> > intermediate_row_reduction_matrix_entries;
+        // for (int j=0; j<column_dimension; j++){
+          // std::vector<float> row; row.resize(row_dimension);
+          // std::fill(row.begin(), row.end(), 0);
+          // intermediate_row_reduction_matrix_entries.push_back(row);
+        // }
+
+        // for ( int index : pivot_rows ){
+          // for (int k=0; k<column_dimension; k++){
+            // intermediate_row_reduction_matrix_entries[index][k] = ret_entries[first_pivot_row_index][k];
+          // }
+        // }
 
 
-        ret_matrix = ret_matrix - matrix(intermediate_row_reduction_matrix_entries);
-      }
+        // ret_matrix = ret_matrix - matrix(intermediate_row_reduction_matrix_entries);
+      // }
 
-      return ret_matrix;
-    };
+      // return ret_matrix;
+    // };
 
     // Constructor for matrix class
     matrix(std::vector<std::vector<float> > entries){
@@ -308,10 +330,4 @@ int main() {
 
   matrix matrix5 = matrix1.remove_leftmost_zero_columns();
   std::cout << matrix5;
-
-  matrix matrix6 = matrix5.row_reduce_matrix();
-  std::cout << "\n";
-  std::cout << "row reduce once \n";
-  std::cout << matrix6;
-  std::cout << "\n";
 }
